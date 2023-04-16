@@ -1,8 +1,43 @@
-import {StyleSheet, View, Text} from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Contato(props) {
+
+  const alertaDeletar = () =>
+    Alert.alert('Deletar Contato', 'Tem certeza que deseja deletar o contato de ' + props.nome + '?', [
+      {
+        text: 'Cancelar',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'Confirmar', onPress: () => deletarContato()},
+    ]);
+  
+  async function getContatosList(){
+    return AsyncStorage.getItem('items')
+      .then(response => {
+        if (response)
+          return Promise.resolve(JSON.parse(response));
+        else
+          return Promise.resolve([]);
+      })
+  }
+
+  const deletarContato = () => {
+    getContatosList()
+    .then(async (items) => {
+      for(let i = 0; i < items.length; i++) {
+        if(items[i].id == props.id) {
+            items.splice(i, 1);
+            break;
+        } 
+      }
+      console.log(items)
+      await AsyncStorage.setItem('items', JSON.stringify(items));
+    });
+  }
+
   return (
     <View style={styles.container}>
       <Icon style={styles.icone} name='person-circle-outline' color='black' size={80} />
@@ -11,15 +46,17 @@ export default function Contato(props) {
             {props.nome + " " + props.sobrenome}
         </Text>
         <Text style={styles.texto}>
-            {props.numero}
+            {props.nome}
         </Text>
         <Text style={styles.texto}>
-            {props.email}
+            {props.endereco}
         </Text>
       </View>
-      <TouchableOpacity style={styles.botaoDeletar}>
-        <Icon name='close-outline' color='black' size={30} />
-      </TouchableOpacity>
+      <View style={styles.botaoDeletar}>
+        <TouchableOpacity onPress={alertaDeletar}>
+          <Icon name='close-outline' color='black' size={30} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -44,19 +81,21 @@ const styles = StyleSheet.create({
         fontWeight: 400,
     },
     icone: {
-        flex: 1,
+        flex: 3,
         textAlign: 'center',
         alignSelf: 'center'
     },
     botaoDeletar: {
-        flex: 1
+        flex: 1,
+        alignSelf: 'flex-start'
     },
     grupoTextos: {
-        flex: 2,
+        flex: 6,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         marginTop: 10,
-        marginBottom: 10
+        marginBottom: 10,
+        overflow: 'hidden'
     }
 })
