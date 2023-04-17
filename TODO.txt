@@ -1,0 +1,4 @@
+Colocar mais e-mails e números na criação de usuário
+Colocar adição de foto na criação do usuário
+Fazer visualização de usuário
+Fazer edição de usuário

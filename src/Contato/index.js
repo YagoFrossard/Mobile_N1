@@ -1,8 +1,11 @@
 import {StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Contato(props) {
+
+  const navigation = useNavigation();
 
   const alertaDeletar = () =>
     Alert.alert('Deletar Contato', 'Tem certeza que deseja deletar o contato de ' + props.nome + '?', [
@@ -22,6 +25,10 @@ export default function Contato(props) {
         else
           return Promise.resolve([]);
       })
+  }
+
+  const abrirDetalhes = () => {
+    navigation.navigate('Visualizar', props);
   }
 
   const deletarContato = () => {
@@ -52,9 +59,12 @@ export default function Contato(props) {
             {props.endereco}
         </Text>
       </View>
-      <View style={styles.botaoDeletar}>
+      <View style={styles.iconBox}>
         <TouchableOpacity onPress={alertaDeletar}>
           <Icon name='close-outline' color='black' size={30} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={abrirDetalhes}>
+          <Icon name='search-outline' color='black' size={25} />
         </TouchableOpacity>
       </View>
     </View>
@@ -85,9 +95,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignSelf: 'center'
     },
-    botaoDeletar: {
-        flex: 1,
-        alignSelf: 'flex-start'
+    iconBox: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
     },
     grupoTextos: {
         flex: 6,

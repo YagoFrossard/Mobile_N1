@@ -1,10 +1,13 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Alert } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ContatosCreate() {
+
+  const navigation = useNavigation();
 
   const [nome, setNome] = useState();
   const [sobrenome, setSobrenome] = useState();
@@ -12,6 +15,28 @@ export default function ContatosCreate() {
   const [email, setEmail] = useState();
   const [endereco, setEndereco] = useState();
   const [foto, setFoto] = useState();
+
+  const gerarAlerta = () => {
+    Alert.alert('Campos nulos', 'Algum dos campos está nulo.', [
+      {
+        text: 'OK',
+        style: 'cancel'
+      }
+    ]);
+  }
+
+  const anularValores = () => {
+    setNome(null)
+    setSobrenome(null)
+    setEndereco(null)
+    setNumero(null)
+    setEmail(null)
+  }
+
+  const voltarParaHome = () => {
+    anularValores();
+    navigation.navigate('Contatos');
+  }
 
   function nomeUpdate(nome) {
     setNome(nome);
@@ -34,24 +59,24 @@ export default function ContatosCreate() {
   }
 
   async function saveContact(){
-    const item = {id: new Date().getTime(), nome, sobrenome, endereco};
-    
-    let items = [];
-    
-    const response = await AsyncStorage.getItem('items');
-
-    if (response) items = JSON.parse(response);
-
-    items.push(item);
-
-    console.log(items);
-    await AsyncStorage.setItem('items', JSON.stringify(items));
-
-    setNome(null)
-    setSobrenome(null)
-    setEndereco(null)
-    setNumero(null)
-    setEmail(null)
+    if( nome && sobrenome && endereco && numero && email ){
+      const item = {id: new Date().getTime(), nome, sobrenome, endereco, numero, email};
+      
+      let items = [];
+      
+      const response = await AsyncStorage.getItem('items');
+  
+      if (response) items = JSON.parse(response);
+  
+      items.push(item);
+  
+      console.log(items);
+      await AsyncStorage.setItem('items', JSON.stringify(items));
+  
+      anularValores();
+    }else{
+      gerarAlerta();
+    }
   }
 
   useEffect(() => {
@@ -62,7 +87,7 @@ export default function ContatosCreate() {
     <View>
       <ScrollView>
         <View style={styles.headerIcons}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={voltarParaHome}>
             <Icon style={styles.icon} name='backspace-outline' color='black' size={40}/>
           </TouchableOpacity>
           <TouchableOpacity onPress={saveContact}>

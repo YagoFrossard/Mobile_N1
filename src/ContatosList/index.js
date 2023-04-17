@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Contato from '../Contato';
 
-export default function ContatosList() {
+export default function ContatosList( {navigation} ) {
 
   const [ items, setItems ] = useState([]);
 
@@ -25,7 +25,14 @@ export default function ContatosList() {
     <View>
       <ScrollView style={styles.itemView}>
         {items.map(item => {
-          return <Contato key={item.id} id={item.id} nome={item.nome} sobrenome={item.sobrenome} endereco={item.endereco}/>
+          return <Contato 
+                    key={item.id} 
+                    id={item.id} 
+                    nome={item.nome} 
+                    sobrenome={item.sobrenome} 
+                    endereco={item.endereco}
+                    numero={item.numero}
+                    email={item.email}/>
         })}
       </ScrollView>
     </View>

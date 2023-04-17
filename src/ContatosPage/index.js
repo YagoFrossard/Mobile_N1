@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import ContatosList from '../ContatosList';
 import ContatosCreate from '../ContatosCreate';
+import ContatoDetail from '../ContatoDetail';
 import { StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'
 
@@ -22,7 +23,8 @@ export default function ContatosPage() {
           tabBarIcon: () => {
             const icons = {
               Contatos: 'people-outline',
-              Criar: 'add-outline'
+              Criar: 'add-outline',
+              Visualizar: 'eye-outline'
             }
 
             return (
@@ -52,12 +54,12 @@ export default function ContatosPage() {
             bottom: 0,
             left: 0,
             right: 0
-          },
-          
+          }
         })} 
         >
         <Screen name="Contatos" component={ContatosList}></Screen>
         <Screen name="Criar" component={ContatosCreate}></Screen>
+        <Screen name="Visualizar" component={ContatoDetail} options={{ tabBarStyle: {display: 'none'} }}></Screen>
       </Navigator>
     </NavigationContainer>
   );
