@@ -3,6 +3,7 @@ import { ScrollView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import FotoContato from '../FotoContato';
 
 export default function ContatosDetail( { route }) {
 
@@ -10,8 +11,11 @@ export default function ContatosDetail( { route }) {
 
     const [nome, setNome] = useState();
     const [sobrenome, setSobrenome] = useState();
-    const [numero, setNumero] = useState();
-    const [email, setEmail] = useState();
+    const [numero1, setNumero1] = useState();
+    const [numero2, setNumero2] = useState();
+    const [numero3, setNumero3] = useState();
+    const [email1, setEmail1] = useState();
+    const [email2, setEmail2] = useState();
     const [endereco, setEndereco] = useState();
     const [foto, setFoto] = useState();
 
@@ -25,8 +29,12 @@ export default function ContatosDetail( { route }) {
             setNome(obj.nome)
             setSobrenome(obj.sobrenome)
             setEndereco(obj.endereco)
-            setNumero(obj.numero)
-            setEmail(obj.email)
+            setNumero1(obj.numeros[0])
+            setNumero2(obj.numeros[1])
+            setNumero3(obj.numeros[2])
+            setEmail1(obj.emails[0])
+            setEmail2(obj.emails[1])
+            setFoto(obj.foto)
         }
     })
 
@@ -42,9 +50,7 @@ export default function ContatosDetail( { route }) {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.imageIcon}>
-                    <TouchableOpacity>
-                        <Icon name='person-circle-outline' color='black' size={250} />
-                    </TouchableOpacity>
+                    <FotoContato mini={false} foto={foto}/>
                 </View>
                 <View style={styles.dados}>
                     <View style={styles.blocoIcones}>
@@ -79,7 +85,17 @@ export default function ContatosDetail( { route }) {
                             style={styles.texto}
                             clearButtomMode='always'
                             editable={false}
-                            value={numero} />
+                            value={numero1} />
+                        <TextInput
+                            style={styles.texto}
+                            clearButtomMode='always'
+                            editable={false}
+                            value={numero2} />
+                        <TextInput
+                            style={styles.texto}
+                            clearButtomMode='always'
+                            editable={false}
+                            value={numero3} />
                     </View>
                 </View>
                 <View style={styles.hr}></View>
@@ -92,7 +108,12 @@ export default function ContatosDetail( { route }) {
                             style={styles.texto}
                             clearButtomMode='always'
                             editable={false}
-                            value={email} />
+                            value={email1} />
+                        <TextInput
+                            style={styles.texto}
+                            clearButtomMode='always'
+                            editable={false}
+                            value={email2} />
                     </View>
                 </View>
             </ScrollView>
@@ -113,7 +134,8 @@ const styles = StyleSheet.create({
     imageIcon: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginBottom: 20
     },
     dados: {
         display: 'flex',

@@ -2,13 +2,14 @@ import {StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import FotoContato from '../FotoContato';
 
 export default function Contato(props) {
 
   const navigation = useNavigation();
 
   const alertaDeletar = () =>
-    Alert.alert('Deletar Contato', 'Tem certeza que deseja deletar o contato de ' + props.nome + '?', [
+    Alert.alert('Deletar Contato', 'Tem certeza que deseja deletar o contato de ' + props.nome + ' ' + props.sobrenome + '?', [
       {
         text: 'Cancelar',
         onPress: () => console.log('Cancel Pressed'),
@@ -45,18 +46,31 @@ export default function Contato(props) {
     });
   }
 
+  const getNumero = () => {
+    if(props.numeros[0]) return props.numeros[0];
+    if(props.numeros[1]) return props.numeros[1];
+    if(props.numeros[2]) return props.numeros[2];
+  }
+
+  const getEmail = () => {
+    if(props.emails[0]) return props.emails[0];
+    if(props.emails[1]) return props.emails[1];
+  }
+
   return (
     <View style={styles.container}>
-      <Icon style={styles.icone} name='person-circle-outline' color='black' size={80} />
+      <View style={styles.blocoFoto}>
+        <FotoContato mini={true} foto={props.foto}/> 
+      </View>
       <View style={styles.grupoTextos}>
         <Text style={styles.texto}>
             {props.nome + " " + props.sobrenome}
         </Text>
         <Text style={styles.texto}>
-            {props.nome}
+            {getNumero()}
         </Text>
         <Text style={styles.texto}>
-            {props.endereco}
+            {getEmail()}
         </Text>
       </View>
       <View style={styles.iconBox}>
@@ -93,7 +107,9 @@ const styles = StyleSheet.create({
     icone: {
         flex: 3,
         textAlign: 'center',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        width: 80,
+        height: 80
     },
     iconBox: {
         display: 'flex',
@@ -108,5 +124,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
         overflow: 'hidden'
+    },
+    blocoFoto: {
+      justifyContent: 'center',
+      paddingLeft: 10,
+      paddingRight: 10
     }
 })

@@ -1,9 +1,12 @@
-import { StyleSheet, Text, TextInput, View, Alert } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Alert, Image } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { launchImageLibraryAsync, launchCameraAsync } from 'expo-image-picker';
+import FotoContato from '../FotoContato';
+
 
 export default function ContatosCreate() {
 
@@ -11,13 +14,25 @@ export default function ContatosCreate() {
 
   const [nome, setNome] = useState();
   const [sobrenome, setSobrenome] = useState();
-  const [numero, setNumero] = useState();
-  const [email, setEmail] = useState();
+  const [numero1, setNumero1] = useState('');
+  const [numero2, setNumero2] = useState('');
+  const [numero3, setNumero3] = useState('');
+  const [email1, setEmail1] = useState('');
+  const [email2, setEmail2] = useState('');
   const [endereco, setEndereco] = useState();
-  const [foto, setFoto] = useState();
+  const [foto, setFoto] = useState('');
 
-  const gerarAlerta = () => {
-    Alert.alert('Campos nulos', 'Algum dos campos está nulo.', [
+  const gerarAlertaCamposNulos = () => {
+    Alert.alert('Campos nulos', 'Nome, sobrenome e endereço não podem ser nulos', [
+      {
+        text: 'OK',
+        style: 'cancel'
+      }
+    ]);
+  }
+
+  const gerarAlertaNumEmailNulos = () => {
+    Alert.alert('Informações insuficientes', 'Pelo menos um número e um e-mail precisam ser cadastrados.', [
       {
         text: 'OK',
         style: 'cancel'
@@ -29,13 +44,77 @@ export default function ContatosCreate() {
     setNome(null)
     setSobrenome(null)
     setEndereco(null)
-    setNumero(null)
-    setEmail(null)
+    setNumero1('')
+    setNumero2('')
+    setNumero3('')
+    setEmail1('')
+    setEmail2('')
+    setFoto('')
   }
 
   const voltarParaHome = () => {
     anularValores();
     navigation.navigate('Contatos');
+  }
+
+  const abrirCamera = async () => {
+
+    let result = await launchCameraAsync({
+      allowsEditing: true,
+      quality: 1
+    });
+
+    if(!result.canceled){
+      setFoto(result.assets[0].uri);
+    }else{
+      Alert.alert('Erro', 'Você não tirou nenhuma foto.', [
+        {
+          text: 'OK',
+          style: 'cancel'
+        }
+      ])
+    }
+  }
+
+  const abrirGaleria = async () => {
+
+    let result = await launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1
+    });
+
+    if(!result.canceled){
+      setFoto(result.assets[0].uri);
+    }else{
+      Alert.alert('Erro', 'Você não selecionou nenhuma imagem.', [
+        {
+          text: 'OK',
+          style: 'cancel'
+        }
+      ])
+    }
+  }
+
+  const selecionarImagem = () => {
+    Alert.alert('Escolher imagem', 'Selecione de onde gostaria de escolher a imagem', [
+      {
+        text: 'Galeria',
+        style: 'default',
+        onPress: () => {abrirGaleria()}
+      },
+      {
+        text: 'Câmera',
+        style: 'default',
+        onPress: () => {abrirCamera()}
+      }
+    ],
+    {
+      cancelable: true,
+      onDismiss: () =>
+        Alert.alert(
+          'Seleção de imagem cancelada.',
+        ),
+    });
   }
 
   function nomeUpdate(nome) {
@@ -50,32 +129,51 @@ export default function ContatosCreate() {
     setEndereco(endereco);
   }
 
-  function numeroUpdate(numero) {
-    setNumero(numero);
+  function numero1Update(numero1) {
+    setNumero1(numero1);
+  }
+
+  function numero2Update(numero2) {
+    setNumero2(numero2);
+  }
+
+  function numero3Update(numero3) {
+    setNumero3(numero3);
   }
   
-  function emailUpdate(email) {
-    setEmail(email);
+  function email1Update(email1) {
+    setEmail1(email1);
+  }
+
+  function email2Update(email2) {
+    setEmail2(email2);
   }
 
   async function saveContact(){
-    if( nome && sobrenome && endereco && numero && email ){
-      const item = {id: new Date().getTime(), nome, sobrenome, endereco, numero, email};
-      
-      let items = [];
-      
-      const response = await AsyncStorage.getItem('items');
+    if( nome && sobrenome && endereco ){
+      if((email1 || email2) && (numero1 || numero2 || numero3)){
+        let numeros = [numero1, numero2, numero3]
+        let emails = [email1, email2]
   
-      if (response) items = JSON.parse(response);
-  
-      items.push(item);
-  
-      console.log(items);
-      await AsyncStorage.setItem('items', JSON.stringify(items));
-  
-      anularValores();
+        const item = {id: new Date().getTime(), nome, sobrenome, endereco, numeros, emails, foto};
+        
+        let items = [];
+        
+        const response = await AsyncStorage.getItem('items');
+    
+        if (response) items = JSON.parse(response);
+    
+        items.push(item);
+    
+        console.log(items);
+        await AsyncStorage.setItem('items', JSON.stringify(items));
+    
+        anularValores();
+      }else{
+        gerarAlertaNumEmailNulos();
+      }
     }else{
-      gerarAlerta();
+      gerarAlertaCamposNulos();
     }
   }
 
@@ -95,8 +193,8 @@ export default function ContatosCreate() {
           </TouchableOpacity>
         </View>
         <View style={styles.imageIcon}>
-          <TouchableOpacity>
-            <Icon name='person-circle-outline' color='black' size={250} />
+          <TouchableOpacity onPress={selecionarImagem}>
+            <FotoContato mini={false} foto={foto}/>
           </TouchableOpacity>
         </View>
         <View style={styles.dados}>
@@ -137,8 +235,22 @@ export default function ContatosCreate() {
             keyboardType='numeric'
             placeholder='Número'
             clearButtomMode='always'
-            value={numero}
-            onChangeText={numeroUpdate}/>
+            value={numero1}
+            onChangeText={numero1Update}/>
+            <TextInput
+            style={styles.texto}
+            keyboardType='numeric'
+            placeholder='Número'
+            clearButtomMode='always'
+            value={numero2}
+            onChangeText={numero2Update}/>
+            <TextInput
+            style={styles.texto}
+            keyboardType='numeric'
+            placeholder='Número'
+            clearButtomMode='always'
+            value={numero3}
+            onChangeText={numero3Update}/>
           </View>
         </View>
         <View style={styles.hr}></View>
@@ -151,8 +263,14 @@ export default function ContatosCreate() {
             style={styles.texto}
             placeholder='E-mail'
             clearButtomMode='always' 
-            value={email}
-            onChangeText={emailUpdate}/>
+            value={email1}
+            onChangeText={email1Update}/>
+            <TextInput
+            style={styles.texto}
+            placeholder='E-mail'
+            clearButtomMode='always' 
+            value={email2}
+            onChangeText={email2Update}/>
           </View>
         </View>
       </ScrollView>
@@ -171,9 +289,10 @@ const styles= StyleSheet.create({
     padding: 10
   },
   imageIcon: {
-    flex: 1,
+    display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 20
   },
   dados: {
     display: 'flex',
@@ -219,5 +338,9 @@ const styles= StyleSheet.create({
     width: '90%',
     marginLeft: 'auto',
     marginRight: 'auto'
+  },
+  blocoFoto: {
+    width: 100,
+    height: 100
   }
 })

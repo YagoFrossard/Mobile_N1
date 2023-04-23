@@ -31,8 +31,9 @@ export default function ContatosList( {navigation} ) {
                     nome={item.nome} 
                     sobrenome={item.sobrenome} 
                     endereco={item.endereco}
-                    numero={item.numero}
-                    email={item.email}/>
+                    numeros={item.numeros}
+                    emails={item.emails}
+                    foto={item.foto}/>
         })}
       </ScrollView>
     </View>
