@@ -23,6 +23,10 @@ export default function ContatosDetail( { route }) {
         navigation.navigate('Contatos');
     }
 
+    const editarUsuario = () => {
+        navigation.navigate('Editar', route.params);
+    }
+
     useEffect(() => {
         let obj = route.params
         if (obj){
@@ -45,7 +49,7 @@ export default function ContatosDetail( { route }) {
                     <TouchableOpacity onPress={voltarParaHome}>
                         <Icon style={styles.icon} name='backspace-outline' color='black' size={40} />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={editarUsuario}>
                         <Icon style={styles.icon} name='pencil-outline' color='black' size={40} />
                     </TouchableOpacity>
                 </View>

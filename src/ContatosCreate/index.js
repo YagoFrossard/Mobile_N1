@@ -169,6 +169,7 @@ export default function ContatosCreate() {
         await AsyncStorage.setItem('items', JSON.stringify(items));
     
         anularValores();
+        voltarParaHome();
       }else{
         gerarAlertaNumEmailNulos();
       }
