@@ -176,7 +176,6 @@ export default function ContatosEdit({route}) {
                     break;
                 } 
             }
-            console.log(items)
             await AsyncStorage.setItem('items', JSON.stringify(items));
         });
     

@@ -5,16 +5,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
 
-  /*
-  clearAsyncStorage = async() => {
-    AsyncStorage.clear();
-  }
-  
-  useEffect(() => {
-    clearAsyncStorage();
-  }, [])
-  */
-
   return (
     <>
       <ContatosPage />

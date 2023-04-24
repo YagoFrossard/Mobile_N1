@@ -41,7 +41,6 @@ export default function Contato(props) {
             break;
         } 
       }
-      console.log(items)
       await AsyncStorage.setItem('items', JSON.stringify(items));
     });
   }
