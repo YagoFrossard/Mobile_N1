@@ -7,7 +7,6 @@ import { useNavigation } from '@react-navigation/native';
 import { launchImageLibraryAsync, launchCameraAsync } from 'expo-image-picker';
 import FotoContato from '../FotoContato';
 
-
 export default function ContatosCreate() {
 
   const navigation = useNavigation();
@@ -165,7 +164,6 @@ export default function ContatosCreate() {
     
         items.push(item);
     
-        console.log(items);
         await AsyncStorage.setItem('items', JSON.stringify(items));
     
         anularValores();
